@@ -15,14 +15,16 @@
   <!-- Camadas de fundo mágico -->
   <div id="ceu"></div>
   <div id="velas"></div>
+  <div id="clima"></div>
   <div id="nevoa">
     <div class="nevoa-camada"></div>
     <div class="nevoa-camada" style="animation-duration:60s; opacity:0.6;"></div>
   </div>
+  <div id="flash"></div>
   <div id="particulas"></div>
 
   <!-- Botão de som -->
-  <button id="btnSom" class="btn-som" title="Ligar/desligar som">🔊</button>
+  <button id="btnSom" class="btn-som" title="Ligar/desligar som e música">🔊</button>
 
   <div id="app">
 
@@ -128,6 +130,9 @@
           <p style="font-size:1.1rem;">Ganhou <strong id="resPontos" class="brilho-texto">0</strong> pontos de magia ✨</p>
           <div id="resMedalha"></div>
         </div>
+        <div class="centro mt">
+          <button id="btnMiniJogo" class="btn btn-grande" style="max-width:420px;">🎁 Mini-jogo bônus: Voo da Vassoura!</button>
+        </div>
         <div class="linha-botoes">
           <button id="btnRepetir" class="btn btn-roxo">🔁 Jogar de novo</button>
           <button id="btnProximaFase" class="btn">Próxima aula ➜</button>
@@ -191,6 +196,8 @@
 
   <!-- Scripts (sem módulos: funcionam por file:// e na Vercel) -->
   <script src="js/sound.js"></script>
+  <script src="js/music.js"></script>
+  <script src="js/minigame.js"></script>
   <script src="js/questions.js"></script>
   <script src="js/game.js"></script>
 </body>

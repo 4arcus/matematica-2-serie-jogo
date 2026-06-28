@@ -5,8 +5,21 @@ estudar e praticar matemática de forma gamificada. Toda a preparação é a jor
 **Primeira Tarefa** do torneio, e cada fase é uma aula de magia.
 
 Feito em **HTML, CSS e JavaScript puro** — sem nenhuma dependência externa. Funciona
-abrindo o arquivo no navegador e também publicado na **Vercel**. Os sons são
+abrindo o arquivo no navegador e também publicado na **Vercel**. Os sons e a música são
 sintetizados em tempo real (Web Audio API), então não há arquivos de áudio para baixar.
+
+### ✨ Imersão e engajamento
+- 🎵 **Trilha sonora contínua e adaptativa**: cada fase tem seu próprio tema musical
+  (procedural, sem arquivos), que troca com transição suave conforme a aula.
+- 🌌 **Cenário muda a cada fase**: masmorra verde com bolhas (Poções), brasas (Dragão),
+  nuvens no céu (Quadribol), runas flutuantes, névoa, etc.
+- 🎉 **Efeitos de recompensa (game juice)**: pontos que sobem animados, selo de combo,
+  faíscas, brilho suave e **pomo-surpresa** de vez em quando (recompensa de razão variável).
+- 🎁 **Mini-jogo bônus** ao fim de cada fase: *Voo da Vassoura* (estilo dino do Chrome) —
+  pule os obstáculos e pegue os pomos para ganhar pontos extras.
+- 🛡️ Casas com **brasões** (escudos) e velas do Salão Principal mais realistas.
+
+> Tudo respeita `prefers-reduced-motion` e há um botão para ligar/desligar som e música.
 
 ---
 
@@ -100,8 +113,10 @@ jogo-tribruxo/
 ├── README.md         ← este arquivo
 └── js/
     ├── sound.js      ← efeitos sonoros (Web Audio API)
+    ├── music.js      ← trilha sonora procedural por fase (Web Audio API)
+    ├── minigame.js   ← mini-jogo bônus "Voo da Vassoura" (canvas)
     ├── questions.js  ← geradores de questões (a matemática)
-    └── game.js       ← motor do jogo, telas e progresso
+    └── game.js       ← motor do jogo, telas, cenários e progresso
 ```
 
 Feito com carinho para o Joaquim. ✨🦁

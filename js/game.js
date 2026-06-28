@@ -151,8 +151,97 @@
       vela.style.top = (5 + Math.random() * 45) + '%';
       vela.style.animationDelay = (Math.random() * 4) + 's';
       vela.style.animationDuration = (5 + Math.random() * 3) + 's';
+      vela.innerHTML = '<span class="chama"></span>';
       velas.appendChild(vela);
     }
+  }
+
+  var reduzMov = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var temaAtual = 'menu';
+  var audioUnlocked = false;
+
+  /* muda o cenário (fundo + clima + música) por fase */
+  function setTema(id) {
+    temaAtual = id;
+    document.body.className = 'tema-' + id;
+    montarClima(id);
+    if (DB.settings.sound && audioUnlocked && window.Music) window.Music.play(id);
+  }
+
+  function montarClima(id) {
+    var c = $('clima');
+    if (!c) return;
+    c.innerHTML = '';
+    if (reduzMov) return;
+    var i, e;
+    if (id === 'pocoes') {
+      for (i = 0; i < 14; i++) {
+        e = el('div', 'bolha');
+        var sz = 6 + Math.random() * 18;
+        e.style.width = sz + 'px'; e.style.height = sz + 'px';
+        e.style.left = Math.random() * 100 + '%';
+        e.style.animationDuration = (5 + Math.random() * 6) + 's';
+        e.style.animationDelay = (Math.random() * 6) + 's';
+        c.appendChild(e);
+      }
+    } else if (id === 'dragao') {
+      for (i = 0; i < 22; i++) {
+        e = el('div', 'brasa');
+        e.style.left = Math.random() * 100 + '%';
+        e.style.setProperty('--drift', (Math.random() * 80 - 40) + 'px');
+        e.style.animationDuration = (3 + Math.random() * 4) + 's';
+        e.style.animationDelay = (Math.random() * 5) + 's';
+        c.appendChild(e);
+      }
+    } else if (id === 'quadribol') {
+      for (i = 0; i < 6; i++) {
+        e = el('div', 'nuvem');
+        var w = 70 + Math.random() * 90;
+        e.style.width = w + 'px'; e.style.height = (w * 0.5) + 'px';
+        e.style.top = (5 + Math.random() * 50) + '%';
+        e.style.animationDuration = (18 + Math.random() * 22) + 's';
+        e.style.animationDelay = (-Math.random() * 30) + 's';
+        c.appendChild(e);
+      }
+    } else if (id === 'runas') {
+      var runas = ['ᚠ', 'ᚱ', 'ᚷ', 'ᛉ', 'ᛊ', 'ᛏ', 'ᚹ', 'ᛚ', 'ᛞ', 'ᚨ'];
+      for (i = 0; i < 10; i++) {
+        e = el('div', 'runa-flutua');
+        e.textContent = pick(runas);
+        e.style.left = Math.random() * 96 + '%';
+        e.style.top = Math.random() * 90 + '%';
+        e.style.fontSize = (16 + Math.random() * 26) + 'px';
+        e.style.animationDuration = (4 + Math.random() * 5) + 's';
+        e.style.animationDelay = (Math.random() * 4) + 's';
+        c.appendChild(e);
+      }
+    } else if (id === 'evanesco') {
+      for (i = 0; i < 4; i++) {
+        e = el('div', 'nuvem');
+        var w2 = 120 + Math.random() * 120;
+        e.style.width = w2 + 'px'; e.style.height = (w2 * 0.5) + 'px';
+        e.style.top = (20 + Math.random() * 60) + '%';
+        e.style.background = 'radial-gradient(circle, rgba(180,150,255,0.5), transparent 70%)';
+        e.style.animationDuration = (26 + Math.random() * 20) + 's';
+        e.style.animationDelay = (-Math.random() * 30) + 's';
+        c.appendChild(e);
+      }
+    }
+  }
+
+  /* brasão (crest) em SVG por casa */
+  function crestSVG(h) {
+    var darker = sombrear(h.primary);
+    var id = 'g_' + h.id;
+    return '<svg class="brasao-svg" viewBox="0 0 100 122" xmlns="http://www.w3.org/2000/svg">' +
+      '<defs><linearGradient id="' + id + '" x1="0" y1="0" x2="0" y2="1">' +
+      '<stop offset="0" stop-color="' + h.primary + '"/><stop offset="1" stop-color="' + darker + '"/></linearGradient></defs>' +
+      '<path d="M50 3 L95 17 V60 C95 95 73 113 50 119 C27 113 5 95 5 60 V17 Z" fill="url(#' + id + ')" stroke="' + h.accent + '" stroke-width="5" stroke-linejoin="round"/>' +
+      '<path d="M50 3 L95 17 V60 C95 95 73 113 50 119 C27 113 5 95 5 60 V17 Z" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" transform="scale(0.88) translate(7,8)"/>' +
+      '<text x="50" y="60" font-size="44" text-anchor="middle" dominant-baseline="central">' + h.emoji + '</text>' +
+      '<text x="22" y="26" font-size="11" fill="' + h.accent + '" text-anchor="middle">✦</text>' +
+      '<text x="78" y="26" font-size="11" fill="' + h.accent + '" text-anchor="middle">✦</text>' +
+      '</svg>';
   }
 
   /* ---------------- efeitos de partículas ---------------- */
@@ -202,14 +291,25 @@
   function setupSom() {
     atualizarBotaoSom();
     S.setEnabled(DB.settings.sound);
+    if (window.Music) window.Music.setEnabled(DB.settings.sound);
     $('btnSom').addEventListener('click', function () {
       DB.settings.sound = S.toggle();
       save();
       atualizarBotaoSom();
+      audioUnlocked = true;
+      if (window.Music) {
+        window.Music.setEnabled(DB.settings.sound);
+        if (DB.settings.sound) { window.Music.unlock(); window.Music.play(temaAtual); }
+      }
       if (DB.settings.sound) { S.unlock(); S.click(); }
     });
-    // desbloqueia o áudio no primeiro toque
-    var unlock = function () { S.unlock(); document.removeEventListener('pointerdown', unlock); };
+    // desbloqueia o áudio no primeiro toque (política de autoplay)
+    var unlock = function () {
+      audioUnlocked = true;
+      S.unlock();
+      if (window.Music) { window.Music.unlock(); if (DB.settings.sound) window.Music.play(temaAtual); }
+      document.removeEventListener('pointerdown', unlock);
+    };
     document.addEventListener('pointerdown', unlock);
   }
 
@@ -282,7 +382,7 @@
       var corTexto = textoContraste(h.primary);
       c.style.color = corTexto;
       var corNome = (corTexto === '#fff') ? h.accent : '#2a1d0e';
-      c.innerHTML = '<div class="emoji">' + h.emoji + '</div><h3 style="color:' + corNome + '">' + h.name + '</h3><p>"' + h.motto + '"</p>';
+      c.innerHTML = '<div class="crest-box">' + crestSVG(h) + '</div><h3 style="color:' + corNome + '">' + h.name + '</h3><p>"' + h.motto + '"</p>';
       c.addEventListener('click', function () {
         S.pick();
         casaEscolhida = h.id;
@@ -294,6 +394,7 @@
       cont.appendChild(c);
     });
     $('btnConfirmarCasa').disabled = true;
+    setTema('menu');
     show('tela-chapeu');
     S.spell();
   }
@@ -343,7 +444,7 @@
     var p = currentPlayer();
     var h = houseById(p.house);
     aplicarCoresCasa(h);
-    $('brasaoTopo').textContent = h.emoji;
+    $('brasaoTopo').innerHTML = crestSVG(h);
     $('nomeTopo').textContent = p.name;
     $('casaTopo').textContent = h.name;
     $('xpTopo').textContent = p.xp;
@@ -368,6 +469,7 @@
       }
       mapa.appendChild(card);
     });
+    setTema('menu');
     show('tela-mapa');
   }
 
@@ -393,6 +495,7 @@
     Quiz.i = 0; Quiz.acertos = 0; Quiz.score = 0; Quiz.hearts = 3; Quiz.combo = 0;
 
     $('tituloFase').innerHTML = ph.icon + ' ' + ph.name;
+    setTema(phaseId); // muda cenário e trilha da fase
     toast(ph.icon + ' ' + (CONFIG.phaseIntros[phaseId] || ''), 4200);
     S.phaseStart();
     show('tela-fase');
@@ -519,22 +622,104 @@
     faiscas(x, y);
   }
 
+  /* ----- efeitos "juice" (baseados em pesquisa de game design) ----- */
+  function countUp(elem, from, to, ms) {
+    if (!elem) return;
+    if (reduzMov || from === to) { elem.textContent = to; return; }
+    var ini = null;
+    function step(ts) {
+      if (ini == null) ini = ts;
+      var p = Math.min(1, (ts - ini) / ms);
+      var eased = 1 - Math.pow(1 - p, 3); // ease-out
+      elem.textContent = Math.round(from + (to - from) * eased);
+      elem.style.transform = 'scale(' + (1 + 0.18 * (1 - p)) + ')';
+      if (p < 1) requestAnimationFrame(step);
+      else elem.style.transform = '';
+    }
+    requestAnimationFrame(step);
+  }
+
+  function shake(amp, ms) {
+    if (reduzMov) return;
+    var alvo = $('cartaoQuestao');
+    if (!alvo) return;
+    var ini = null;
+    function step(ts) {
+      if (ini == null) ini = ts;
+      var p = (ts - ini) / ms;
+      if (p >= 1) { alvo.style.transform = ''; return; }
+      var a = amp * (1 - p);
+      alvo.style.transform = 'translate(' + ((Math.random() * 2 - 1) * a) + 'px,' + ((Math.random() * 2 - 1) * a) + 'px)';
+      requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function flashScreen() {
+    if (reduzMov) return;
+    var f = $('flash');
+    if (!f) return;
+    f.classList.remove('bater'); void f.offsetWidth; f.classList.add('bater');
+  }
+
+  function comboPop(texto) {
+    if (reduzMov) { toast(texto, 1200); return; }
+    var p = el('div', 'combo-pop', texto);
+    document.body.appendChild(p);
+    setTimeout(function () { if (p.parentNode) p.parentNode.removeChild(p); }, 950);
+  }
+
   function registrarAcerto(ev) {
     Quiz.acertos++;
     Quiz.combo++;
+    var prev = Quiz.score;
     var ganho = 100 + Math.min(Quiz.combo - 1, 5) * 20;
-    if (Quiz.hearts === 3) ganho += 20; // bônus por estar com tudo
+    if (Quiz.hearts === 3) ganho += 20; // bônus por mandar bem
     Quiz.score += ganho;
     S.correct();
-    if (Quiz.combo >= 3) S.coin();
     faiscasEvento(ev);
+
+    // escalonamento de combo (recompensa crescente) — marcos 3,5,7,10...
+    if (Quiz.combo === 3 || Quiz.combo === 5 || Quiz.combo === 7 || Quiz.combo >= 10 && Quiz.combo % 3 === 0) {
+      S.coin();
+      flashScreen();
+      comboPop('🔥 Combo x' + Quiz.combo + '!');
+      if (window.Music) { window.Music.duck(true); setTimeout(function () { window.Music.duck(false); }, 600); }
+    }
+
+    // recompensa de razão variável (surpresa) — pomo de ouro bônus
+    if (Math.random() < 0.16) {
+      var bonus = 50 + Math.floor(Math.random() * 5) * 25; // 50..150
+      Quiz.score += bonus;
+      setTimeout(function () {
+        S.snitch();
+        voarPomo();
+        toast('🟡 Sorte de bruxo! +' + bonus + ' de magia!', 2200);
+      }, 260);
+    }
+
     atualizarHUD();
+    countUp($('pontosFase'), prev, Quiz.score, 550);
+  }
+
+  // animação de um pomo de ouro cruzando a tela (recompensa surpresa)
+  function voarPomo() {
+    if (reduzMov) return;
+    var p = el('div', '', '🟡');
+    p.style.cssText = 'position:fixed;z-index:62;font-size:34px;left:-50px;top:' + (20 + Math.random() * 50) + '%;' +
+      'filter:drop-shadow(0 0 10px gold);transition:transform 1.1s cubic-bezier(.4,0,.6,1),opacity 1.1s;pointer-events:none;';
+    document.body.appendChild(p);
+    requestAnimationFrame(function () {
+      p.style.transform = 'translateX(' + (window.innerWidth + 120) + 'px) translateY(-30px) rotate(40deg)';
+    });
+    setTimeout(function () { if (p.parentNode) p.parentNode.removeChild(p); }, 1200);
   }
 
   function registrarErro(q) {
     Quiz.combo = 0;
     Quiz.hearts = Math.max(0, Quiz.hearts - 1);
     S.wrong();
+    shake(6, 320); // tremor leve e curto (kid-safe)
     atualizarHUD();
   }
 
@@ -595,7 +780,7 @@
     $('resMensagem').textContent = CONFIG.estrelas[estrelas];
     $('resAcertos').textContent = Quiz.acertos;
     $('resTotal').textContent = Quiz.total;
-    $('resPontos').textContent = Quiz.score;
+    $('resPontos').textContent = '0';
 
     var medHtml = '';
     if (novas.length) {
@@ -614,8 +799,29 @@
       $('btnProximaFase').style.display = 'none';
     }
 
-    show('tela-resultado');
+    // botão do mini-jogo bônus (recompensa ao fim da fase)
+    var btnMini = $('btnMiniJogo');
+    btnMini.style.display = '';
+    btnMini.onclick = function () {
+      S.click();
+      if (window.Music) window.Music.play('quadribol'); // trilha animada no voo
+      window.MiniGame.open(function (placar) {
+        var bonus = Math.min(800, placar | 0);
+        if (bonus > 0) {
+          p.xp += bonus; save();
+          var atual = parseInt($('resPontos').textContent, 10) || Quiz.score;
+          countUp($('resPontos'), atual, atual + bonus, 800);
+          toast('🎁 +' + bonus + ' pontos de magia no mini-jogo!', 2800);
+          confete();
+        }
+        if (window.Music) window.Music.play(temaAtual);
+      });
+    };
 
+    show('tela-resultado');
+    countUp($('resPontos'), 0, Quiz.score, 900);
+
+    if (window.Music) { window.Music.duck(true); setTimeout(function () { window.Music.duck(false); }, 2200); }
     if (ph.boss && p.victory) {
       S.dragon();
       setTimeout(function () { mostrarVitoria(); }, 1800);

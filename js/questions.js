@@ -102,8 +102,12 @@
   }
 
   var NOMES = ['Harry', 'Hermione', 'Rony', 'Luna', 'Neville', 'Gina', 'Hagrid', 'Dobby', 'Cho', 'Jorge'];
-  var INGREDIENTES = ['folhas de mandrágora', 'penas de fênix', 'escamas de dragão', 'sapos de chocolate',
-    'feijõezinhos mágicos', 'cristais brilhantes', 'cogumelos da floresta', 'estrelas cadentes', 'moedas de ouro'];
+  var INGREDIENTES = [
+    { n: 'folhas de mandrágora', f: true }, { n: 'penas de fênix', f: true }, { n: 'escamas de dragão', f: true },
+    { n: 'sapos de chocolate', f: false }, { n: 'feijõezinhos mágicos', f: false }, { n: 'cristais brilhantes', f: false },
+    { n: 'cogumelos da floresta', f: false }, { n: 'estrelas cadentes', f: true }, { n: 'moedas de ouro', f: true }
+  ];
+  function quantos(ing) { return ing.f ? 'Quantas' : 'Quantos'; }
 
   /* =====================================================================
      FASE 1 — FEITIÇOS DE ENCANTAMENTO
@@ -252,8 +256,8 @@
     if (ehProblema) {
       var nome = pick(NOMES), nome2 = pick(NOMES), ing = pick(INGREDIENTES);
       context = '🧪 Poção a preparar';
-      prompt = nome + ' juntou <span class="num">' + A + '</span> ' + ing + ' e ' + nome2 +
-        ' trouxe mais <span class="num">' + B + '</span>. Quantos ' + ing + ' há no caldeirão?';
+      prompt = nome + ' juntou <span class="num">' + A + '</span> ' + ing.n + ' e ' + nome2 +
+        ' trouxe mais <span class="num">' + B + '</span>. ' + quantos(ing) + ' ' + ing.n + ' há no caldeirão?';
       stage = '<span class="caldeirao">🧪</span>';
     } else {
       context = '🧪 Misture os ingredientes';
@@ -296,8 +300,8 @@
     if (ehProblema) {
       var nome = pick(NOMES), ing = pick(INGREDIENTES);
       context = '💨 Evanesco! (algo vai sumir)';
-      prompt = 'Havia <span class="num">' + A + '</span> ' + ing + '. Com o feitiço Evanesco, <span class="num">' + B +
-        '</span> sumiram. Quantos sobraram?';
+      prompt = 'Havia <span class="num">' + A + '</span> ' + ing.n + '. Com o feitiço Evanesco, <span class="num">' + B +
+        '</span> sumiram. ' + quantos(ing) + ' ' + ing.n + ' sobraram?';
     } else {
       context = '💨 Faça os números sumirem';
       prompt = '<span class="num">' + A + ' − ' + B + '</span> = ?';
