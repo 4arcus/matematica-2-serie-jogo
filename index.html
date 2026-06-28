@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0a0f2c" />
+  <title>Torneio Tribruxo da Matemática</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏆</text></svg>" />
+</head>
+<body>
+  <!-- Camadas de fundo mágico -->
+  <div id="ceu"></div>
+  <div id="velas"></div>
+  <div id="nevoa">
+    <div class="nevoa-camada"></div>
+    <div class="nevoa-camada" style="animation-duration:60s; opacity:0.6;"></div>
+  </div>
+  <div id="particulas"></div>
+
+  <!-- Botão de som -->
+  <button id="btnSom" class="btn-som" title="Ligar/desligar som">🔊</button>
+
+  <div id="app">
+
+    <!-- ====================== TELA: CADASTRO ====================== -->
+    <section id="tela-cadastro" class="tela ativa">
+      <div class="centro" style="margin: 8vh 0 18px;">
+        <h1 class="titulo-magico t1">🏆 Torneio Tribruxo<br>da Matemática</h1>
+        <p class="subtitulo" id="tagline">A magia dos números espera por você!</p>
+      </div>
+      <div class="pergaminho">
+        <h2 class="centro" style="margin-top:0; color:var(--ouro-escuro);">✨ Receba sua carta de Hogwarts ✨</h2>
+        <p class="centro">Qual é o seu nome, jovem bruxo(a)?</p>
+        <input id="inputNome" class="campo" type="text" maxlength="18" placeholder="Digite seu nome" autocomplete="off" />
+        <button id="btnComecar" class="btn btn-grande">Receber minha carta 🪄</button>
+        <p class="centro mt-pequeno" style="font-size:0.85rem; color:#6a5328;">
+          Já é um bruxo daqui? Seu progresso fica guardado neste aparelho.
+        </p>
+      </div>
+      <div class="centro mt">
+        <button id="btnVerPlacarCadastro" class="btn btn-fantasma">🏅 Ver a Taça do Torneio</button>
+      </div>
+    </section>
+
+    <!-- ====================== TELA: CHAPÉU SELETOR ====================== -->
+    <section id="tela-chapeu" class="tela">
+      <div class="centro" style="margin-top: 4vh;">
+        <div style="font-size:4rem;">🎩</div>
+        <h1 class="titulo-magico t2">O Chapéu Seletor</h1>
+        <p class="subtitulo" id="chapeuIntro"></p>
+      </div>
+      <div class="painel-escuro mt">
+        <p class="centro">Escolha a sua casa, <span id="nomeChapeu" class="brilho-texto"></span>:</p>
+        <div id="casas" class="casas"></div>
+        <button id="btnConfirmarCasa" class="btn btn-grande mt" disabled>Entrar para minha casa! ✨</button>
+      </div>
+    </section>
+
+    <!-- ====================== TELA: MAPA DO TORNEIO ====================== -->
+    <section id="tela-mapa" class="tela">
+      <div class="topo">
+        <div class="bruxo">
+          <div id="brasaoTopo" class="brasao">🦁</div>
+          <div>
+            <div style="font-weight:700;" id="nomeTopo">Bruxo</div>
+            <div style="font-size:0.82rem; opacity:0.85;" id="casaTopo">Casa</div>
+          </div>
+        </div>
+        <div class="placar-topo">⭐ <span id="xpTopo">0</span> pontos de magia</div>
+      </div>
+
+      <div class="centro" style="margin: 6px 0 14px;">
+        <h1 class="titulo-magico t2">🗺️ O Caminho da Primeira Tarefa</h1>
+        <p class="subtitulo">Domine cada aula de magia para enfrentar o desafio final!</p>
+      </div>
+
+      <div id="mapa" class="mapa"></div>
+
+      <div class="linha-botoes">
+        <button id="btnPlacar" class="btn btn-fantasma">🏅 Taça do Torneio</button>
+        <button id="btnMedalhas" class="btn btn-fantasma">🎖️ Minhas medalhas</button>
+        <button id="btnTrocarBruxo" class="btn btn-fantasma">🔄 Trocar de bruxo</button>
+      </div>
+    </section>
+
+    <!-- ====================== TELA: FASE / QUESTÃO ====================== -->
+    <section id="tela-fase" class="tela">
+      <div class="topo">
+        <button id="btnVoltarMapa" class="btn btn-fantasma" style="min-height:auto; padding:8px 14px;">⬅️ Mapa</button>
+        <div class="vidas" id="vidas">❤️❤️❤️</div>
+        <div class="placar-topo">⭐ <span id="pontosFase">0</span></div>
+      </div>
+
+      <div class="centro mt-pequeno">
+        <h2 id="tituloFase" class="titulo-magico t3"></h2>
+      </div>
+      <div class="barra-progresso"><div id="progressoFase" class="preenchimento"></div></div>
+      <div class="linha-status">
+        <span id="contadorQuestao">Questão 1 de 8</span>
+        <span id="comboTxt"></span>
+      </div>
+
+      <div id="cartaoQuestao" class="pergaminho mt">
+        <p id="contextoMagico" class="contexto-magico"></p>
+        <div id="palco" class="palco"></div>
+        <p id="enunciado" class="enunciado"></p>
+        <div id="areaResposta"></div>
+        <div id="feedback" class="feedback"></div>
+      </div>
+
+      <div id="areaContinuar" class="centro mt escondido">
+        <button id="btnProxima" class="btn btn-grande btn-roxo">Continuar ➜</button>
+      </div>
+    </section>
+
+    <!-- ====================== TELA: RESULTADO DA FASE ====================== -->
+    <section id="tela-resultado" class="tela">
+      <div class="resultado" style="margin-top: 5vh;">
+        <h1 id="resTitulo" class="titulo-magico t2"></h1>
+        <div id="resEstrelas" class="estrelas-grandes"></div>
+        <div class="painel-escuro" style="max-width:520px; margin: 0 auto;">
+          <p id="resMensagem" style="font-size:1.15rem;"></p>
+          <p style="font-size:1.1rem;">Você conjurou <strong id="resAcertos" class="brilho-texto">0</strong> de <strong id="resTotal">0</strong> magias!</p>
+          <p style="font-size:1.1rem;">Ganhou <strong id="resPontos" class="brilho-texto">0</strong> pontos de magia ✨</p>
+          <div id="resMedalha"></div>
+        </div>
+        <div class="linha-botoes">
+          <button id="btnRepetir" class="btn btn-roxo">🔁 Jogar de novo</button>
+          <button id="btnProximaFase" class="btn">Próxima aula ➜</button>
+          <button id="btnVoltarMapa2" class="btn btn-fantasma">🗺️ Mapa</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================== TELA: PLACAR / TAÇA ====================== -->
+    <section id="tela-placar" class="tela">
+      <div class="centro" style="margin-top: 3vh;">
+        <h1 class="titulo-magico t2">🏅 Taça do Torneio Tribruxo</h1>
+        <p class="subtitulo">Os maiores bruxos da matemática!</p>
+      </div>
+      <div class="painel-escuro mt">
+        <div id="taçaCasas" class="mt-pequeno"></div>
+        <h3 style="color:var(--ouro);">Ranking dos bruxos</h3>
+        <div style="overflow-x:auto;">
+          <table class="tabela-placar">
+            <thead><tr><th>#</th><th>Bruxo(a)</th><th>Casa</th><th>Pontos</th></tr></thead>
+            <tbody id="corpoPlacar"></tbody>
+          </table>
+        </div>
+        <p id="placarVazio" class="centro" style="opacity:0.7;"></p>
+      </div>
+      <div class="centro mt">
+        <button id="btnFecharPlacar" class="btn btn-fantasma">⬅️ Voltar</button>
+      </div>
+    </section>
+
+    <!-- ====================== TELA: MEDALHAS ====================== -->
+    <section id="tela-medalhas" class="tela">
+      <div class="centro" style="margin-top: 3vh;">
+        <h1 class="titulo-magico t2">🎖️ Minhas Medalhas</h1>
+        <p class="subtitulo" id="medalhasResumo"></p>
+      </div>
+      <div id="gradeMedalhas" class="painel-escuro mt" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;"></div>
+      <div class="centro mt">
+        <button id="btnFecharMedalhas" class="btn btn-fantasma">⬅️ Voltar</button>
+      </div>
+    </section>
+
+    <!-- ====================== TELA: VITÓRIA FINAL ====================== -->
+    <section id="tela-vitoria" class="tela">
+      <div class="centro" style="margin-top: 4vh;">
+        <div class="dragao-cena">🏆</div>
+        <h1 class="titulo-magico t1">Campeão Tribruxo!</h1>
+        <div class="pergaminho mt" style="max-width:560px; margin:16px auto;">
+          <p id="vitoriaTexto" style="font-size:1.15rem; line-height:1.5;"></p>
+        </div>
+        <div class="linha-botoes">
+          <button id="btnVitoriaMapa" class="btn">🗺️ Voltar ao mapa</button>
+          <button id="btnVitoriaPlacar" class="btn btn-roxo">🏅 Ver a Taça</button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <div id="toast"></div>
+
+  <!-- Scripts (sem módulos: funcionam por file:// e na Vercel) -->
+  <script src="js/sound.js"></script>
+  <script src="js/questions.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
