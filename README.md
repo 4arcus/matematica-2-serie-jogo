@@ -15,8 +15,9 @@ sintetizados em tempo real (Web Audio API), então não há arquivos de áudio p
   nuvens no céu (Quadribol), runas flutuantes, névoa, etc.
 - 🎉 **Efeitos de recompensa (game juice)**: pontos que sobem animados, selo de combo,
   faíscas, brilho suave e **pomo-surpresa** de vez em quando (recompensa de razão variável).
-- 🎁 **Mini-jogo bônus** ao fim de cada fase: *Voo da Vassoura* (estilo dino do Chrome) —
-  pule os obstáculos e pegue os pomos para ganhar pontos extras.
+- 🎁 **Mini-jogo bônus diferente ao fim de cada fase**: oficina de valor posicional,
+  caldeirão de somas, Evanesco de subtração, voo sequencial do pomo, memória de runas,
+  duelo de comparação e arena final do dragão.
 - 🛡️ Casas com **brasões** (escudos) e velas do Salão Principal mais realistas.
 
 > Tudo respeita `prefers-reduced-motion` e há um botão para ligar/desligar som e música.
@@ -45,6 +46,9 @@ sintetizados em tempo real (Web Audio API), então não há arquivos de áudio p
 | 5 | 🔮 Runas Antigas | **Aprofundamento**: número escondido (`5 + 🟪 = 8`), símbolos alternativos de operação, comparação `> < =`, mesma quantidade em outras formas |
 | 6 | ⚔️ Duelo de Feitiços | Maior/menor/igual e ordenar (crescente e decrescente) |
 | 7 | 🐉 A Primeira Tarefa | Desafio final misturando tudo |
+
+Além de múltipla escolha, o jogo agora alterna respostas digitadas, ordenação e construção
+de números com centenas, dezenas e unidades.
 
 As contas começam na faixa **0–99** e avançam até **0–499**, exatamente como o livro.
 As questões são **geradas por código** (números novos a cada partida), então dá para
@@ -114,7 +118,7 @@ jogo-tribruxo/
 └── js/
     ├── sound.js      ← efeitos sonoros (Web Audio API)
     ├── music.js      ← trilha sonora procedural por fase (Web Audio API)
-    ├── minigame.js   ← mini-jogo bônus "Voo da Vassoura" (canvas)
+    ├── minigame.js   ← registry dos mini-jogos bônus por fase
     ├── questions.js  ← geradores de questões (a matemática)
     └── game.js       ← motor do jogo, telas, cenários e progresso
 ```

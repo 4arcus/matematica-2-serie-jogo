@@ -109,11 +109,26 @@
   ];
   function quantos(ing) { return ing.f ? 'Quantas' : 'Quantos'; }
 
+  function genConstruirNumero(level) {
+    var N = level === 1 ? randInt(21, 99) : randInt(100, 499);
+    var dg = digits(N);
+    return {
+      type: 'build-number',
+      context: '🧱 Oficina do valor posicional',
+      promptHTML: 'Construa o número <span class="num">' + N + '</span> usando centenas, dezenas e unidades.',
+      target: N,
+      correct: String(N),
+      explain: N + ' tem ' + dg.c + ' centena(s), ' + dg.d + ' dezena(s) e ' + dg.u + ' unidade(s).'
+    };
+  }
+
   /* =====================================================================
      FASE 1 — FEITIÇOS DE ENCANTAMENTO
      Composição/decomposição, valor posicional, por extenso, material dourado
      ===================================================================== */
   function genFeiticos(level) {
+    if (Math.random() < (level >= 2 ? 0.20 : 0.14)) return genConstruirNumero(level);
+
     var maxTipo = (level >= 2) ? 6 : 5;
     var tipo = randInt(1, maxTipo);
     var N, c, d, u, parte = [], correct, pool, opts, prompt, stage = '', context, explain;
@@ -265,7 +280,7 @@
       stage = '<span class="caldeirao">⚗️</span>';
     }
     return {
-      type: 'mc', context: context, promptHTML: prompt, stageHTML: stage,
+      type: Math.random() < 0.30 ? 'number' : 'mc', context: context, promptHTML: prompt, stageHTML: stage,
       options: opts, correct: String(soma),
       explain: A + ' + ' + B + ' = ' + soma + '. Some primeiro as unidades, depois as dezenas (e troque 10 por 1 quando passar de 9!).'
     };
@@ -307,7 +322,7 @@
       prompt = '<span class="num">' + A + ' − ' + B + '</span> = ?';
     }
     return {
-      type: 'mc', context: context, promptHTML: prompt, stageHTML: stage,
+      type: Math.random() < 0.30 ? 'number' : 'mc', context: context, promptHTML: prompt, stageHTML: stage,
       options: opts, correct: String(dif),
       explain: A + ' − ' + B + ' = ' + dif + '. Quando não dá para tirar, peça emprestado 1 da casa do lado (vira 10)!'
     };
@@ -384,7 +399,7 @@
       explain = 'A sequência ' + (cresc ? 'aumenta' : 'diminui') + ' de ' + p + ' em ' + p + ': o número certo é ' + correct + '.';
     }
 
-    return { type: 'mc', context: context, promptHTML: prompt, stageHTML: stage, options: opts, correct: String(correct), explain: explain };
+    return { type: Math.random() < 0.22 ? 'number' : 'mc', context: context, promptHTML: prompt, stageHTML: stage, options: opts, correct: String(correct), explain: explain };
   }
 
   /* =====================================================================
@@ -503,7 +518,7 @@
       prompt = 'Qual é o <strong>' + (querMaior ? 'MAIOR' : 'MENOR') + '</strong> número?<br><span class="num">' + nums.join(', ') + '</span>';
       explain = (querMaior ? 'O maior' : 'O menor') + ' de ' + nums.join(', ') + ' é ' + correct + '.';
       opts = shuffle(nums.map(String));
-      return { type: 'mc', context: context, promptHTML: prompt, stageHTML: '', options: opts, correct: String(correct), explain: explain };
+      return { type: Math.random() < 0.25 ? 'number' : 'mc', context: context, promptHTML: prompt, stageHTML: '', options: opts, correct: String(correct), explain: explain };
     } else { // ordenar (clicar em ordem)
       var qtd2 = (level >= 2) ? 4 : 3;
       var nums2 = [];
@@ -529,13 +544,13 @@
 
   /* ---------------- definição das fases ---------------- */
   var PHASES = [
-    { id: 'feiticos', name: 'Feitiços de Encantamento', icon: '🪄', short: 'Compor, decompor e valor dos números', count: 8, gen: genFeiticos },
-    { id: 'pocoes', name: 'Aula de Poções', icon: '🧪', short: 'Adição: juntar ingredientes', count: 8, gen: genPocoes },
-    { id: 'evanesco', name: 'Feitiço Evanesco', icon: '💨', short: 'Subtração: fazer sumir', count: 8, gen: genEvanesco },
-    { id: 'quadribol', name: 'Treino de Quadribol', icon: '🧹', short: 'Reta, antecessor, sucessor e sequências', count: 8, gen: genQuadribol },
-    { id: 'runas', name: 'Runas Antigas', icon: '🔮', short: 'Símbolos secretos e números escondidos', count: 8, gen: genRunas },
-    { id: 'duelo', name: 'Duelo de Feitiços', icon: '⚔️', short: 'Maior, menor, igual e ordenar', count: 8, gen: genDuelo },
-    { id: 'dragao', name: 'A Primeira Tarefa', icon: '🐉', short: 'O desafio final: tudo junto!', count: 10, gen: genDragao, boss: true }
+    { id: 'feiticos', name: 'Feitiços de Encantamento', icon: '🪄', short: 'Compor, decompor e valor dos números', count: 8, gen: genFeiticos, minigame: 'feiticos', bonusName: 'Oficina da Varinha Numérica' },
+    { id: 'pocoes', name: 'Aula de Poções', icon: '🧪', short: 'Adição: juntar ingredientes', count: 8, gen: genPocoes, minigame: 'pocoes', bonusName: 'Caldeirão Borbulhante' },
+    { id: 'evanesco', name: 'Feitiço Evanesco', icon: '💨', short: 'Subtração: fazer sumir', count: 8, gen: genEvanesco, minigame: 'evanesco', bonusName: 'Sala do Evanesco' },
+    { id: 'quadribol', name: 'Treino de Quadribol', icon: '🧹', short: 'Reta, antecessor, sucessor e sequências', count: 8, gen: genQuadribol, minigame: 'quadribol', bonusName: 'Voo do Pomo Sequencial' },
+    { id: 'runas', name: 'Runas Antigas', icon: '🔮', short: 'Símbolos secretos e números escondidos', count: 8, gen: genRunas, minigame: 'runas', bonusName: 'Biblioteca das Runas Secretas' },
+    { id: 'duelo', name: 'Duelo de Feitiços', icon: '⚔️', short: 'Maior, menor, igual e ordenar', count: 8, gen: genDuelo, minigame: 'duelo', bonusName: 'Clube de Duelos Numéricos' },
+    { id: 'dragao', name: 'A Primeira Tarefa', icon: '🐉', short: 'O desafio final: tudo junto!', count: 10, gen: genDragao, boss: true, minigame: 'dragao', bonusName: 'Arena do Dragão' }
   ];
 
   // calcula o "nível" (1,2,3) conforme o progresso dentro da fase

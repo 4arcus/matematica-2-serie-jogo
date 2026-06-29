@@ -184,6 +184,17 @@
         e.style.animationDelay = (Math.random() * 6) + 's';
         c.appendChild(e);
       }
+    } else if (id === 'feiticos') {
+      for (i = 0; i < 14; i++) {
+        e = el('div', 'glifo-luz');
+        e.textContent = pick(['✦', '✧', '✺', '✹']);
+        e.style.left = Math.random() * 96 + '%';
+        e.style.top = Math.random() * 90 + '%';
+        e.style.fontSize = (14 + Math.random() * 22) + 'px';
+        e.style.animationDuration = (5 + Math.random() * 5) + 's';
+        e.style.animationDelay = (Math.random() * 4) + 's';
+        c.appendChild(e);
+      }
     } else if (id === 'dragao') {
       for (i = 0; i < 22; i++) {
         e = el('div', 'brasa');
@@ -212,6 +223,16 @@
         e.style.top = Math.random() * 90 + '%';
         e.style.fontSize = (16 + Math.random() * 26) + 'px';
         e.style.animationDuration = (4 + Math.random() * 5) + 's';
+        e.style.animationDelay = (Math.random() * 4) + 's';
+        c.appendChild(e);
+      }
+    } else if (id === 'duelo') {
+      for (i = 0; i < 12; i++) {
+        e = el('div', 'centelha-duelo');
+        e.style.left = Math.random() * 100 + '%';
+        e.style.top = Math.random() * 95 + '%';
+        e.style.setProperty('--duel-dx', (Math.random() * 180 - 90) + 'px');
+        e.style.animationDuration = (2.4 + Math.random() * 2.4) + 's';
         e.style.animationDelay = (Math.random() * 4) + 's';
         c.appendChild(e);
       }
@@ -458,9 +479,10 @@
       var estr = ph.boss
         ? (p.victory ? '<div class="estrelas-mini estrela-on">👑 VENCIDO!</div>' : '')
         : '<div class="estrelas-mini">' + estrelasMini(dados.bestStars || 0) + '</div>';
+      var bonus = ph.bonusName ? '<div class="bonus-preview">🎁 Bônus: ' + ph.bonusName + '</div>' : '';
       card.innerHTML =
         '<div class="icone">' + (liberada ? ph.icon : '🔒') + '</div>' +
-        '<div class="info"><h3>' + (idx + 1) + '. ' + ph.name + '</h3><p>' + ph.short + '</p>' + estr + '</div>' +
+        '<div class="info"><h3>' + (idx + 1) + '. ' + ph.name + '</h3><p>' + ph.short + '</p>' + bonus + estr + '</div>' +
         (liberada ? '' : '<div class="cadeado">🔒</div>');
       if (liberada) {
         card.addEventListener('click', function () { S.click(); iniciarFase(ph.id); });
@@ -529,6 +551,8 @@
     $('areaContinuar').classList.add('escondido');
 
     if (q.type === 'order') renderOrder(q);
+    else if (q.type === 'number') renderNumber(q);
+    else if (q.type === 'build-number') renderBuildNumber(q);
     else renderMC(q);
   }
 
@@ -564,6 +588,82 @@
     if (acertou) registrarAcerto(ev);
     else { botao.classList.add('errada'); registrarErro(q); }
     mostrarFeedback(acertou, q);
+  }
+
+  /* --- resposta numérica digitada --- */
+  function renderNumber(q) {
+    var area = $('areaResposta');
+    area.innerHTML = '';
+    var visor = el('div', 'visor', '');
+    var teclado = el('div', 'teclado');
+    var valor = '';
+    function atualizar() { visor.textContent = valor || '...'; }
+    function apertar(v, ev) {
+      if (Quiz.respondida) return;
+      if (v === 'ok') { responderNumber(valor, q, ev); return; }
+      if (v === 'del') valor = valor.slice(0, -1);
+      else if (valor.length < 4) valor += v;
+      if (S) S.pick();
+      atualizar();
+    }
+    ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'del', '0', 'ok'].forEach(function (v) {
+      var label = v === 'del' ? '⌫' : (v === 'ok' ? 'OK ✨' : v);
+      var b = el('button', 'tecla' + (v === 'ok' ? ' acao' : ''), label);
+      b.addEventListener('click', function (ev) { apertar(v, ev); });
+      teclado.appendChild(b);
+    });
+    atualizar();
+    area.appendChild(visor);
+    area.appendChild(teclado);
+  }
+
+  function responderNumber(valor, q, ev) {
+    if (Quiz.respondida) return;
+    Quiz.respondida = true;
+    var acertou = String(parseInt(valor, 10)) === String(q.correct);
+    if (acertou) registrarAcerto(ev);
+    else registrarErro(q);
+    mostrarFeedback(acertou, q);
+  }
+
+  /* --- construir número com centenas, dezenas e unidades --- */
+  function renderBuildNumber(q) {
+    var area = $('areaResposta');
+    area.innerHTML = '';
+    var atual = 0;
+    var visor = el('div', 'visor', '0');
+    var pecas = el('div', 'construtor-numero');
+    var teclado = el('div', 'teclado');
+    function desenhar() {
+      var c = Math.floor(atual / 100), d = Math.floor(atual / 10) % 10, u = atual % 10;
+      visor.textContent = atual;
+      pecas.innerHTML =
+        '<div><strong>' + c + '</strong><span>centenas</span></div>' +
+        '<div><strong>' + d + '</strong><span>dezenas</span></div>' +
+        '<div><strong>' + u + '</strong><span>unidades</span></div>';
+    }
+    function somar(v) {
+      if (Quiz.respondida) return;
+      atual = Math.min(499, atual + v);
+      if (S) S.pick();
+      desenhar();
+    }
+    [
+      { t: '+100', v: 100 }, { t: '+10', v: 10 }, { t: '+1', v: 1 },
+      { t: 'Limpar', v: 'clear' }, { t: 'Conjurar ✨', v: 'ok' }
+    ].forEach(function (x) {
+      var b = el('button', 'tecla' + (x.v === 'ok' ? ' acao' : ''), x.t);
+      b.addEventListener('click', function (ev) {
+        if (x.v === 'clear') { atual = 0; desenhar(); if (S) S.spell(); }
+        else if (x.v === 'ok') responderNumber(String(atual), q, ev);
+        else somar(x.v);
+      });
+      teclado.appendChild(b);
+    });
+    desenhar();
+    area.appendChild(visor);
+    area.appendChild(pecas);
+    area.appendChild(teclado);
   }
 
   /* --- ordenar (clicar em ordem) --- */
@@ -801,11 +901,14 @@
 
     // botão do mini-jogo bônus (recompensa ao fim da fase)
     var btnMini = $('btnMiniJogo');
+    var mini = window.MiniGame && window.MiniGame.get ? window.MiniGame.get(ph.minigame || ph.id) : null;
+    var miniTitle = mini ? mini.title : ('🎁 Mini-jogo bônus: ' + (ph.bonusName || 'Voo da Vassoura'));
+    btnMini.innerHTML = '🎁 Mini-jogo bônus: ' + miniTitle.replace(/^[^\s]+ /, '');
     btnMini.style.display = '';
     btnMini.onclick = function () {
       S.click();
-      if (window.Music) window.Music.play('quadribol'); // trilha animada no voo
-      window.MiniGame.open(function (placar) {
+      if (window.Music) window.Music.play((mini && mini.music) || ph.id || 'quadribol');
+      window.MiniGame.open(ph.minigame || ph.id, function (placar) {
         var bonus = Math.min(800, placar | 0);
         if (bonus > 0) {
           p.xp += bonus; save();

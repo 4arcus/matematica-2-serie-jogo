@@ -712,6 +712,32 @@ body.tema-dragao {
   0%,100% { transform: translateY(0) rotate(-4deg); opacity: 0.35; }
   50% { transform: translateY(-18px) rotate(4deg); opacity: 0.95; }
 }
+.glifo-luz {
+  position: absolute;
+  color: rgba(255,233,168,0.88);
+  font-family: Cinzel, serif;
+  text-shadow: 0 0 12px rgba(240,199,94,0.85), 0 0 28px rgba(240,199,94,0.35);
+  animation: flutuarGlifo ease-in-out infinite;
+}
+@keyframes flutuarGlifo {
+  0%,100% { transform: translateY(0) scale(0.85) rotate(-8deg); opacity: 0.28; }
+  50% { transform: translateY(-22px) scale(1.14) rotate(8deg); opacity: 0.95; }
+}
+.centelha-duelo {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff2a0, #ff5b50 58%, transparent 75%);
+  box-shadow: 0 0 10px 3px rgba(255,80,70,0.65), 0 0 24px rgba(240,199,94,0.36);
+  animation: riscarDuelo ease-in-out infinite;
+}
+@keyframes riscarDuelo {
+  0% { transform: translateX(0) scale(0.35); opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 0.9; }
+  100% { transform: translateX(var(--duel-dx, 80px)) scale(1.05); opacity: 0; }
+}
 
 /* flash dopaminérgico suave (combo / acerto especial) */
 #flash {
@@ -743,3 +769,230 @@ body.tema-dragao {
   display: grid; place-items: center; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
 .casa-opcao .crest-box { width: 64px; height: 78px; margin: 0 auto 4px; }
 .casa-opcao .crest-box .brasao-svg { height: 100%; width: 100%; }
+
+/* ============================================================
+   POLIMENTO PREMIUM — cards, questões variadas e mini-jogos
+   ============================================================ */
+.fase-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255,255,255,0.16), transparent 20%),
+    linear-gradient(120deg, rgba(255,255,255,0.10), transparent 35%, rgba(240,199,94,0.10));
+  opacity: 0.75;
+  pointer-events: none;
+}
+.fase-card .info, .fase-card .icone, .cadeado { position: relative; z-index: 1; }
+.bonus-preview {
+  display: inline-flex;
+  margin-top: 8px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(240,199,94,0.13);
+  border: 1px solid rgba(240,199,94,0.35);
+  color: var(--ouro-claro);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+.construtor-numero {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  max-width: 420px;
+  margin: 12px auto;
+}
+.construtor-numero div {
+  background: linear-gradient(180deg, rgba(255,255,255,0.88), rgba(243,230,196,0.92));
+  border: 2px solid var(--ouro-escuro);
+  border-radius: 16px;
+  color: var(--tinta);
+  padding: 12px 8px;
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,0.25), 0 6px 14px rgba(0,0,0,0.18);
+}
+.construtor-numero strong {
+  display: block;
+  font-family: var(--fonte-titulo);
+  font-size: 2rem;
+  color: var(--ouro-escuro);
+}
+.construtor-numero span {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.mini-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 14px;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(240,199,94,0.20), transparent 34%),
+    rgba(5,7,25,0.94);
+  backdrop-filter: blur(5px);
+}
+.mini-card {
+  width: min(760px, 96vw);
+  max-height: 94vh;
+  overflow: auto;
+  border-radius: 26px;
+  border: 2px solid rgba(240,199,94,0.72);
+  background:
+    linear-gradient(180deg, rgba(20,24,62,0.96), rgba(8,11,34,0.98)),
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,0.18), transparent 40%);
+  box-shadow: 0 24px 70px rgba(0,0,0,0.68), inset 0 0 0 1px rgba(255,255,255,0.08);
+  padding: clamp(16px, 4vw, 26px);
+}
+.mini-header { text-align: center; }
+.mini-header h2 {
+  margin: 0;
+  color: var(--ouro);
+  text-shadow: 0 0 18px rgba(240,199,94,0.55);
+  font-size: clamp(1.25rem, 5vw, 2rem);
+}
+.mini-header p {
+  margin: 6px auto 12px;
+  max-width: 580px;
+  color: var(--ouro-claro);
+}
+.mini-hud {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 10px 0 14px;
+}
+.mini-hud span {
+  min-width: 110px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.34);
+  border: 1px solid rgba(240,199,94,0.55);
+  color: var(--ouro-claro);
+  font-weight: 800;
+}
+.mini-stage {
+  min-height: 230px;
+  border-radius: 22px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background:
+    radial-gradient(circle at 50% 20%, rgba(255,255,255,0.10), transparent 34%),
+    rgba(0,0,0,0.26);
+  padding: clamp(14px, 4vw, 22px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+}
+.mini-number {
+  text-align: center;
+  font-size: clamp(1.15rem, 4vw, 1.55rem);
+  color: var(--ouro-claro);
+  line-height: 1.35;
+}
+.mini-number strong {
+  font-family: var(--fonte-titulo);
+  color: var(--ouro);
+  font-size: 1.25em;
+}
+.mini-grid, .mini-controls, .mini-objects, .mini-dragon {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+.mini-rune-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(64px, 1fr));
+}
+.mini-choice {
+  min-height: 58px;
+  min-width: 78px;
+  border-radius: 16px;
+  border: 2px solid rgba(240,199,94,0.78);
+  background: linear-gradient(180deg, rgba(255,249,225,0.98), rgba(224,207,160,0.98));
+  color: var(--tinta);
+  font-family: var(--fonte-corpo);
+  font-size: 1.15rem;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 5px 0 var(--ouro-escuro), 0 10px 20px rgba(0,0,0,0.24);
+  touch-action: manipulation;
+}
+.mini-choice:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--ouro-escuro); }
+.mini-choice.primary {
+  background: linear-gradient(180deg, #cdb9ff, var(--roxo-magia));
+  color: #fff;
+  border-color: #5b34c2;
+  box-shadow: 0 5px 0 #5b34c2, 0 10px 20px rgba(0,0,0,0.24);
+}
+.mini-choice.sel, .mini-choice.open {
+  outline: 4px solid rgba(240,199,94,0.45);
+  filter: brightness(1.1);
+}
+.mini-choice.object { min-width: 58px; font-size: 1.8rem; }
+.mini-choice.object.gone { opacity: 0.22; transform: scale(0.74); pointer-events: none; filter: blur(1px); }
+.mini-choice.rune-card {
+  min-height: 76px;
+  background: linear-gradient(160deg, #281a48, #130925);
+  color: #d8c2ff;
+  font-family: var(--fonte-titulo);
+  text-shadow: 0 0 10px rgba(180,140,255,0.85);
+}
+.mini-choice.rune-card.matched {
+  background: linear-gradient(180deg, #bff7bf, var(--verde-poção));
+  color: #123d12;
+  pointer-events: none;
+  text-shadow: none;
+}
+.mini-blocks {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.mini-blocks div {
+  border-radius: 18px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(240,199,94,0.42);
+  padding: 14px 8px;
+  text-align: center;
+}
+.mini-blocks strong {
+  display: block;
+  font-family: var(--fonte-titulo);
+  font-size: 2.2rem;
+  color: var(--ouro);
+}
+.mini-blocks small { color: var(--ouro-claro); font-weight: 800; }
+.mini-hint {
+  margin: 14px auto 12px;
+  max-width: 620px;
+  text-align: center;
+  color: #d9cdf6;
+  font-weight: 700;
+  line-height: 1.35;
+}
+.mini-wrong { animation: miniWrong 0.45s ease; }
+@keyframes miniWrong {
+  0%,100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  50% { transform: translateX(8px); }
+  75% { transform: translateX(-4px); }
+}
+.bonus-feiticos .mini-stage { background: radial-gradient(circle at 50% 12%, rgba(240,199,94,0.18), transparent 40%), rgba(31,24,65,0.8); }
+.bonus-pocoes .mini-stage { background: radial-gradient(circle at 50% 100%, rgba(110,224,110,0.22), transparent 52%), rgba(5,32,28,0.88); }
+.bonus-evanesco .mini-stage { background: radial-gradient(circle at 50% 40%, rgba(180,150,255,0.26), transparent 56%), rgba(25,16,54,0.9); }
+.bonus-quadribol .mini-stage { background: linear-gradient(180deg, rgba(55,113,168,0.7), rgba(16,38,75,0.9)); }
+.bonus-runas .mini-stage { background: radial-gradient(circle at 50% 50%, rgba(124,77,255,0.28), transparent 58%), rgba(18,8,40,0.92); }
+.bonus-duelo .mini-stage { background: radial-gradient(circle at 50% 100%, rgba(192,57,43,0.25), transparent 58%), rgba(42,10,26,0.92); }
+.bonus-dragao .mini-stage { background: radial-gradient(circle at 50% 100%, rgba(255,122,24,0.38), transparent 58%), rgba(52,13,7,0.95); }
+
+@media (max-width: 560px) {
+  .mini-rune-grid { grid-template-columns: repeat(2, 1fr); }
+  .mini-choice { width: 100%; }
+  .mini-controls .mini-choice, .mini-grid .mini-choice, .mini-dragon .mini-choice { width: auto; flex: 1 1 42%; }
+  .mini-blocks, .construtor-numero { grid-template-columns: 1fr; }
+}
